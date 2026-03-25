@@ -32,6 +32,7 @@ def filter_events(
     region: str | None = None,
     branch: str | None = None,
     confidence: str | None = None,
+    event_type: str | None = None,
 ) -> pd.DataFrame:
     """Filter events DataFrame by optional parameters.
 
@@ -39,11 +40,13 @@ def filter_events(
     (i.e. no filter applied for that column).
 
     Args:
-        df:         DataFrame returned by load_events().
-        region:     Match rows where the 'region' column equals this value.
-        branch:     Match rows where the 'branch' column equals this value.
-        confidence: Match rows where the 'confidence' column equals this value
-                    (e.g. 'High', 'Med', 'Low').
+        df:          DataFrame returned by load_events().
+        region:      Match rows where the 'region' column equals this value.
+        branch:      Match rows where the 'branch' column equals this value.
+        confidence:  Match rows where the 'confidence' column equals this value
+                     (e.g. 'High', 'Med', 'Low').
+        event_type:  Match rows where the 'event_type' column equals this value
+                     (e.g. 'deployment', 'strike').
 
     Returns:
         Filtered DataFrame (original index preserved).
@@ -61,5 +64,8 @@ def filter_events(
 
     if confidence is not None:
         mask &= df["confidence"].str.lower() == confidence.lower()
+
+    if event_type is not None:
+        mask &= df["event_type"].str.lower() == event_type.lower()
 
     return df[mask]

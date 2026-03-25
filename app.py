@@ -55,6 +55,22 @@ _COORDS: dict[str, tuple[float, float]] = {
     "latvia":           (57.0,  24.7),
     "estonia":          (58.6,  25.0),
     "baltics":          (57.5,  24.0),
+    # Iranian target locations
+    "tehran":           (35.7,  51.4),
+    "karaj":            (35.8,  50.9),
+    "natanz":           (33.7,  51.9),
+    "esfahan":          (32.6,  51.7),
+    "fordow":           (34.9,  50.9),
+    "qom":              (34.6,  50.9),
+    "bandar abbas":     (27.2,  56.3),
+    "bandar":           (27.2,  56.3),
+    "iran":             (32.4,  53.7),
+    # Bahrain
+    "bahrain":          (26.2,  50.6),
+    "juffair":          (26.2,  50.6),
+    # Indian Ocean / Sri Lanka
+    "sri lanka":        ( 7.9,  80.7),
+    "indian ocean":     ( 5.0,  75.0),
 }
 
 BRANCH_COLORS: dict[str, str] = {
@@ -91,10 +107,12 @@ with st.sidebar:
     all_regions     = ["All"] + sorted(df_all["region"].dropna().unique().tolist())
     all_branches    = ["All"] + sorted(df_all["branch"].dropna().unique().tolist())
     all_confidences = ["All", "High", "Med", "Low"]
+    all_event_types = ["All", "deployment", "strike"]
 
     sel_region     = st.selectbox("Region",     all_regions)
     sel_branch     = st.selectbox("Branch",     all_branches)
     sel_confidence = st.selectbox("Confidence", all_confidences)
+    sel_event_type = st.selectbox("Event Type", all_event_types)
 
     st.divider()
     st.caption(f"{len(df_all)} total events in database")
@@ -104,6 +122,7 @@ df = filter_events(
     region     = None if sel_region     == "All" else sel_region,
     branch     = None if sel_branch     == "All" else sel_branch,
     confidence = None if sel_confidence == "All" else sel_confidence,
+    event_type = None if sel_event_type == "All" else sel_event_type,
 ).reset_index(drop=True)
 
 # ── header ─────────────────────────────────────────────────────────────────────
@@ -149,8 +168,11 @@ else:
         lon="_lon",
         color="branch",
         color_discrete_map=BRANCH_COLORS,
+        symbol="event_type",
+        symbol_map={"deployment": "circle", "strike": "star"},
         hover_name="asset_name",
         hover_data={
+            "event_type":  True,
             "asset_type":  True,
             "region":      True,
             "confidence":  True,
@@ -193,7 +215,7 @@ st.subheader("Events")
 
 TABLE_COLS = [
     "event_id", "date", "asset_name", "asset_type",
-    "branch", "region", "confidence",
+    "branch", "region", "confidence", "event_type",
 ]
 display_df = df[TABLE_COLS].copy()
 display_df["date"] = display_df["date"].dt.strftime("%Y-%m-%d")
@@ -212,6 +234,7 @@ selection = st.dataframe(
         "branch":     st.column_config.TextColumn("Branch",     width="small"),
         "region":     st.column_config.TextColumn("Region",     width="medium"),
         "confidence": st.column_config.TextColumn("Confidence", width="small"),
+        "event_type": st.column_config.TextColumn("Event Type", width="small"),
     },
 )
 
@@ -247,6 +270,7 @@ if selected_rows:
         )
         st.markdown(f"- **Date:** {date_str}")
         st.markdown(f"- **Asset Type:** {event['asset_type']}")
+        st.markdown(f"- **Event Type:** {event['event_type']}")
         st.markdown(f"- **Branch:** {event['branch']}")
         st.markdown(f"- **Region:** {event['region']}")
 
