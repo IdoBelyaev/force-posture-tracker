@@ -1,0 +1,35 @@
+/* Force Posture Tracker — custom styles */
+
+/* Tighten metric card spacing */
+[data-testid="stMetric"] {
+    background: #1e2130;
+    border: 1px solid #2a2f45;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+[data-testid="stMetricLabel"] {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #8b92a5 !important;
+}
+
+[data-testid="stMetricValue"] {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Detail panel info box */
+[data-testid="stAlert"] {
+    border-radius: 6px;
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+/* Sidebar label sizing */
+[data-testid="stSidebar"] label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
